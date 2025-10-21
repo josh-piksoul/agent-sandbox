@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Wizard - GitHub Pages Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            padding: 2rem;
+        }
+
+        .wizard-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .wizard-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .wizard-title {
+            font-size: 2rem;
+            color: #43e97b;
+            margin-bottom: 0.5rem;
+        }
+
+        .wizard-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            margin-bottom: 2.5rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+            transition: width 0.3s ease;
+            z-index: 1;
+        }
+
+        .step-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            z-index: 2;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            border-color: #43e97b;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step-indicator.completed {
+            border-color: #43e97b;
+            background: #43e97b;
+            color: white;
+        }
+
+        .step-content {
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .step-description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #43e97b;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            border-color: #43e97b;
+            background: #43e97b10;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 1rem;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(67, 233, 123, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #43e97b;
+            border: 2px solid #43e97b;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #43e97b;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-home {
+            background: #f0f0f0;
+            color: #666;
+            padding: 0.675rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-home:hover {
+            background: #e0e0e0;
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 3;
+            stroke: #43e97b;
+            stroke-miterlimit: 10;
+            box-shadow: inset 0 0 0 #43e97b;
+            animation: fillCheckmark 0.4s ease-in-out 0.4s forwards, scaleCheckmark 0.3s ease-in-out 0.9s both;
+        }
+
+        .success-checkmark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 3;
+            stroke-miterlimit: 10;
+            stroke: #43e97b;
+            fill: none;
+            animation: strokeCheckmark 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .success-checkmark-check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: strokeCheckmark 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        @keyframes strokeCheckmark {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes scaleCheckmark {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+
+        @keyframes fillCheckmark {
+            100% {
+                box-shadow: inset 0 0 0 30px #43e97b;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <h1 class="wizard-title">Setup Wizard</h1>
+            <p class="wizard-subtitle">Complete the steps below to finish the setup</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="step-indicator active" data-step="1">1</div>
+                <div class="step-indicator" data-step="2">2</div>
+                <div class="step-indicator" data-step="3">3</div>
+                <div class="step-indicator" data-step="4">4</div>
+            </div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step-content active" data-step="1">
+            <div class="step-icon">🎯</div>
+            <h2 class="step-title">Welcome!</h2>
+            <p class="step-description">Let's get you started with your new account. This wizard will guide you through the setup process in just a few simple steps.</p>
+            <div class="form-group">
+                <label class="form-label" for="fullName">Full Name</label>
+                <input type="text" id="fullName" class="form-input" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="you@example.com">
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-content" data-step="2">
+            <div class="step-icon">⚙️</div>
+            <h2 class="step-title">Preferences</h2>
+            <p class="step-description">Choose your preferences to customize your experience.</p>
+            <div class="form-group">
+                <label class="form-label">Select your interests:</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="interests" value="web">
+                        <span>Web Development</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="interests" value="mobile">
+                        <span>Mobile Development</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="interests" value="design">
+                        <span>UI/UX Design</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="interests" value="data">
+                        <span>Data Science</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-content" data-step="3">
+            <div class="step-icon">🔔</div>
+            <h2 class="step-title">Notifications</h2>
+            <p class="step-description">Configure how you'd like to receive updates and notifications.</p>
+            <div class="form-group">
+                <label class="form-label">Notification preferences:</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="notifications" value="email" checked>
+                        <span>Email notifications</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="notifications" value="push">
+                        <span>Push notifications</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="notifications" value="weekly">
+                        <span>Weekly digest</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-content" data-step="4">
+            <div class="step-icon">
+                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="success-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            <h2 class="step-title">All Done!</h2>
+            <p class="step-description">Congratulations! You've completed the setup wizard. Your account is now configured and ready to use.</p>
+            <p class="step-description">Click the button below to return to the home page and start exploring.</p>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" disabled>← Previous</button>
+            <a href="index.html" class="btn btn-home" id="homeBtn" style="display: none;">🏠 Home</a>
+            <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function updateWizard() {
+            // Update step content visibility
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelector(`.step-content[data-step="${currentStep}"]`).classList.add('active');
+
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                const stepNumber = index + 1;
+                indicator.classList.remove('active', 'completed');
+
+                if (stepNumber === currentStep) {
+                    indicator.classList.add('active');
+                } else if (stepNumber < currentStep) {
+                    indicator.classList.add('completed');
+                }
+            });
+
+            // Update progress bar
+            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+
+            // Update buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const homeBtn = document.getElementById('homeBtn');
+
+            prevBtn.disabled = currentStep === 1;
+
+            if (currentStep === totalSteps) {
+                nextBtn.style.display = 'none';
+                homeBtn.style.display = 'inline-block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                homeBtn.style.display = 'none';
+                nextBtn.textContent = 'Next →';
+            }
+        }
+
+        function changeStep(direction) {
+            const newStep = currentStep + direction;
+
+            if (newStep >= 1 && newStep <= totalSteps) {
+                currentStep = newStep;
+                updateWizard();
+            }
+        }
+
+        // Initialize wizard
+        updateWizard();
+    </script>
+</body>
+</html>
