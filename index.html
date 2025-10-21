@@ -83,6 +83,27 @@
             margin-bottom: 1rem;
             animation: fadeInDown 1s ease 0.2s both;
         }
+
+        .nav-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            border: 2px solid #667eea;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .nav-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -92,6 +113,8 @@
         <p>This is a test page for GitHub Pages workflow.</p>
         <p>If you can see this page, your GitHub Pages deployment is working successfully!</p>
         <span class="badge">GitHub Pages Active</span>
+        <br>
+        <a href="demo.html" class="nav-button">View Demo Page →</a>
     </div>
 </body>
 </html>
