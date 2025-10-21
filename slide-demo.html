@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Presentation Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .presentation-container {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-content {
+            flex: 1;
+            padding: 60px;
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .slide-content.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Title Slide */
+        .slide-title {
+            text-align: center;
+        }
+
+        .slide-title h1 {
+            font-size: 3.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .slide-title .subtitle {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .slide-title .author {
+            font-size: 1.1em;
+            color: #999;
+            margin-top: 40px;
+        }
+
+        /* Content Slides */
+        .slide-content h2 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 40px;
+            border-bottom: 4px solid #764ba2;
+            padding-bottom: 15px;
+        }
+
+        .slide-content h3 {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+
+        .slide-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide-content ul li {
+            font-size: 1.3em;
+            color: #444;
+            margin-bottom: 20px;
+            padding-left: 40px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .slide-content ul li:before {
+            content: "▸";
+            color: #764ba2;
+            font-size: 1.5em;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        .slide-content p {
+            font-size: 1.2em;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Thank You Slide */
+        .slide-thankyou {
+            text-align: center;
+        }
+
+        .slide-thankyou h2 {
+            font-size: 4em;
+            border: none;
+            margin-bottom: 30px;
+        }
+
+        .slide-thankyou p {
+            font-size: 1.5em;
+            color: #666;
+        }
+
+        .slide-thankyou .emoji {
+            font-size: 5em;
+            margin: 30px 0;
+        }
+
+        /* Navigation Controls */
+        .controls {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-counter {
+            font-size: 1em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-button {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .nav-button.prev {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .nav-button.prev:hover:not(:disabled) {
+            background: #d0d0d0;
+        }
+
+        .nav-button.next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-button.next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-button.home {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .nav-button.home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 233, 123, 0.4);
+        }
+
+        /* Slide Indicators */
+        .slide-indicators {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .indicator.active {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .indicator.completed {
+            background: #764ba2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .presentation-container {
+                height: 500px;
+            }
+
+            .slide-content {
+                padding: 30px;
+            }
+
+            .slide-title h1 {
+                font-size: 2.5em;
+            }
+
+            .slide-title .subtitle {
+                font-size: 1.2em;
+            }
+
+            .slide-content h2 {
+                font-size: 2em;
+            }
+
+            .slide-content ul li {
+                font-size: 1.1em;
+            }
+
+            .controls {
+                padding: 15px 20px;
+            }
+
+            .nav-button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide-content active slide-title" data-slide="1">
+            <h1>Building Modern Web Apps</h1>
+            <p class="subtitle">A Comprehensive Guide to Full-Stack Development</p>
+            <p class="author">Presentation Demo 2024</p>
+        </div>
+
+        <!-- Slide 2: Introduction -->
+        <div class="slide-content" data-slide="2">
+            <h2>Introduction</h2>
+            <ul>
+                <li>Modern web development landscape</li>
+                <li>Full-stack development overview</li>
+                <li>Key technologies and frameworks</li>
+                <li>Best practices and patterns</li>
+            </ul>
+        </div>
+
+        <!-- Slide 3: Frontend Technologies -->
+        <div class="slide-content" data-slide="3">
+            <h2>Frontend Technologies</h2>
+            <ul>
+                <li>React, Vue, and Angular frameworks</li>
+                <li>HTML5 and CSS3 features</li>
+                <li>JavaScript ES6+ capabilities</li>
+                <li>Responsive design principles</li>
+                <li>Progressive Web Apps (PWAs)</li>
+            </ul>
+        </div>
+
+        <!-- Slide 4: Backend Technologies -->
+        <div class="slide-content" data-slide="4">
+            <h2>Backend Technologies</h2>
+            <ul>
+                <li>Node.js and Express.js</li>
+                <li>Database management (SQL & NoSQL)</li>
+                <li>RESTful API design</li>
+                <li>Authentication and security</li>
+                <li>Cloud deployment strategies</li>
+            </ul>
+        </div>
+
+        <!-- Slide 5: Thank You -->
+        <div class="slide-content slide-thankyou" data-slide="5">
+            <h2>Thank You!</h2>
+            <div class="emoji">👏</div>
+            <p>Questions?</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="nav-button prev" onclick="changeSlide(-1)">← Previous</button>
+
+            <div class="slide-indicators">
+                <span class="indicator active" data-indicator="1" onclick="goToSlide(1)"></span>
+                <span class="indicator" data-indicator="2" onclick="goToSlide(2)"></span>
+                <span class="indicator" data-indicator="3" onclick="goToSlide(3)"></span>
+                <span class="indicator" data-indicator="4" onclick="goToSlide(4)"></span>
+                <span class="indicator" data-indicator="5" onclick="goToSlide(5)"></span>
+            </div>
+
+            <div class="nav-buttons">
+                <span class="slide-counter">Slide <span id="current-slide">1</span> of <span id="total-slides">5</span></span>
+                <button class="nav-button next" onclick="changeSlide(1)">Next →</button>
+                <a href="index.html" class="nav-button home" style="display: none;">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 5;
+
+        function updatePresentation() {
+            // Update slide content visibility
+            document.querySelectorAll('.slide-content').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            document.querySelector(`.slide-content[data-slide="${currentSlide}"]`).classList.add('active');
+
+            // Update indicators
+            document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                indicator.classList.remove('active', 'completed');
+                const slideNum = index + 1;
+                if (slideNum === currentSlide) {
+                    indicator.classList.add('active');
+                } else if (slideNum < currentSlide) {
+                    indicator.classList.add('completed');
+                }
+            });
+
+            // Update slide counter
+            document.getElementById('current-slide').textContent = currentSlide;
+
+            // Update buttons
+            const prevButton = document.querySelector('.nav-button.prev');
+            const nextButton = document.querySelector('.nav-button.next');
+            const homeButton = document.querySelector('.nav-button.home');
+
+            prevButton.disabled = currentSlide === 1;
+
+            if (currentSlide === totalSlides) {
+                nextButton.style.display = 'none';
+                homeButton.style.display = 'inline-block';
+            } else {
+                nextButton.style.display = 'inline-block';
+                homeButton.style.display = 'none';
+            }
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 1 && newSlide <= totalSlides) {
+                currentSlide = newSlide;
+                updatePresentation();
+            }
+        }
+
+        function goToSlide(slideNumber) {
+            if (slideNumber >= 1 && slideNumber <= totalSlides) {
+                currentSlide = slideNumber;
+                updatePresentation();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        updatePresentation();
+    </script>
+</body>
+</html>
