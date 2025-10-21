@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Little Star's Adventure - Kids Book Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .book-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            perspective: 1500px;
+        }
+
+        .book {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cover Page */
+        .cover {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 10px;
+            padding: 60px 20px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cover h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .cover .author {
+            font-size: 1.5em;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .cover .star-emoji {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 20px;
+            font-size: 1em;
+            color: #666;
+        }
+
+        .illustration {
+            font-size: 8em;
+            margin: 30px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .text {
+            font-size: 1.8em;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 20px 0;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-indicator {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .book {
+                padding: 20px;
+                min-height: 500px;
+            }
+
+            .cover h1 {
+                font-size: 2em;
+            }
+
+            .cover .author {
+                font-size: 1.2em;
+            }
+
+            .text {
+                font-size: 1.4em;
+            }
+
+            .illustration {
+                font-size: 5em;
+            }
+
+            button {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+        }
+
+        /* Page-specific backgrounds */
+        .page-1 { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .page-2 { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+        .page-3 { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+        .page-4 { background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%); }
+        .page-5 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .page-6 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+
+        .page-bg {
+            border-radius: 10px;
+            padding: 40px 20px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book">
+            <!-- Cover -->
+            <div class="page active" data-page="0">
+                <div class="cover">
+                    <h1>The Little Star's<br>Adventure</h1>
+                    <div class="star-emoji">⭐</div>
+                    <p class="author">A Magical Journey Through the Night Sky</p>
+                </div>
+            </div>
+
+            <!-- Page 1 -->
+            <div class="page" data-page="1">
+                <div class="page-content page-bg page-1">
+                    <div class="illustration">⭐🌙</div>
+                    <p class="text">
+                        Once upon a time, high up in the night sky, there lived a little star named Stella.
+                    </p>
+                    <div class="page-number">Page 1</div>
+                </div>
+            </div>
+
+            <!-- Page 2 -->
+            <div class="page" data-page="2">
+                <div class="page-content page-bg page-2">
+                    <div class="illustration">⭐😊</div>
+                    <p class="text">
+                        Stella was the smallest star in the sky, but she had the biggest dreams!
+                    </p>
+                    <div class="page-number">Page 2</div>
+                </div>
+            </div>
+
+            <!-- Page 3 -->
+            <div class="page" data-page="3">
+                <div class="page-content page-bg page-3">
+                    <div class="illustration">🌟🚀</div>
+                    <p class="text">
+                        One night, Stella decided to go on an adventure to visit all her friends across the galaxy.
+                    </p>
+                    <div class="page-number">Page 3</div>
+                </div>
+            </div>
+
+            <!-- Page 4 -->
+            <div class="page" data-page="4">
+                <div class="page-content page-bg page-4">
+                    <div class="illustration">☄️🪐</div>
+                    <p class="text">
+                        She zoomed past comets, danced around planets, and waved to the friendly Moon.
+                    </p>
+                    <div class="page-number">Page 4</div>
+                </div>
+            </div>
+
+            <!-- Page 5 -->
+            <div class="page" data-page="5">
+                <div class="page-content page-bg page-5">
+                    <div class="illustration">⭐💫✨</div>
+                    <p class="text">
+                        Along the way, she made many new friends who loved her bright, sparkly light!
+                    </p>
+                    <div class="page-number">Page 5</div>
+                </div>
+            </div>
+
+            <!-- Page 6 -->
+            <div class="page" data-page="6">
+                <div class="page-content page-bg page-6">
+                    <div class="illustration">⭐💖🏠</div>
+                    <p class="text">
+                        Stella learned that no matter how small you are, you can shine bright and make the world a better place!
+                    </p>
+                    <div class="page-number">Page 6</div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <button id="prevBtn" onclick="previousPage()">← Previous</button>
+                <div class="page-indicator">
+                    <span id="currentPage">Cover</span>
+                </div>
+                <button id="nextBtn" onclick="nextPage()">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPageIndex = 0;
+        const pages = document.querySelectorAll('.page');
+        const totalPages = pages.length - 1; // Subtract 1 for the cover
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentPageDisplay = document.getElementById('currentPage');
+
+        function showPage(index) {
+            // Hide all pages
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Show current page
+            pages[index].classList.add('active');
+
+            // Update page indicator
+            if (index === 0) {
+                currentPageDisplay.textContent = 'Cover';
+            } else {
+                currentPageDisplay.textContent = `Page ${index} of 6`;
+            }
+
+            // Update button states
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === pages.length - 1;
+        }
+
+        function nextPage() {
+            if (currentPageIndex < pages.length - 1) {
+                currentPageIndex++;
+                showPage(currentPageIndex);
+            }
+        }
+
+        function previousPage() {
+            if (currentPageIndex > 0) {
+                currentPageIndex--;
+                showPage(currentPageIndex);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousPage();
+            }
+        });
+
+        // Initialize
+        showPage(0);
+    </script>
+</body>
+</html>
