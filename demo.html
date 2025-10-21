@@ -97,12 +97,20 @@
             text-decoration: none;
             font-weight: 600;
             margin-top: 2rem;
+            margin-right: 1rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .nav-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         @keyframes fadeIn {
@@ -155,7 +163,10 @@
         <h2>About This Demo</h2>
         <p>This is a demonstration of GitHub Pages hosting static HTML files. Each page has its own unique design while maintaining a cohesive look and feel. The navigation between pages is seamless and intuitive.</p>
 
-        <a href="index.html" class="nav-button">← Back to Home</a>
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-button">← Back to Home</a>
+            <a href="wizard.html" class="nav-button">Try Setup Wizard →</a>
+        </div>
     </div>
 </body>
 </html>

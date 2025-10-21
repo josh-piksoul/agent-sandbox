@@ -93,6 +93,8 @@
             text-decoration: none;
             font-weight: 600;
             margin-top: 1.5rem;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
             border: 2px solid #667eea;
             transition: all 0.3s ease;
             animation: fadeInUp 1s ease 0.5s both;
@@ -104,6 +106,14 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -113,8 +123,10 @@
         <p>This is a test page for GitHub Pages workflow.</p>
         <p>If you can see this page, your GitHub Pages deployment is working successfully!</p>
         <span class="badge">GitHub Pages Active</span>
-        <br>
-        <a href="demo.html" class="nav-button">View Demo Page →</a>
+        <div class="nav-buttons">
+            <a href="demo.html" class="nav-button">View Demo Page →</a>
+            <a href="wizard.html" class="nav-button">Try Setup Wizard →</a>
+        </div>
     </div>
 </body>
 </html>
